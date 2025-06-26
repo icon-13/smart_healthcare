@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Doctor Dashboard{% endblock %}
+
+{% block content %}
+<h2>Doctor Dashboard</h2>
+<p>Welcome, <strong>{{ current_user.username }}</strong></p>
+
+<h3 class="mb-4 mt-4">Patient List</h3>
+
+<table class="table table-striped table-bordered shadow-sm">
+  <thead class="table-primary">
+    <tr>
+      <th>Name</th>
+      <th>Age</th>
+      <th>Domicile</th>
+      <th>Occupation</th>
+      <th>Gender</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for patient in patients %}
+    <tr>
+      <td>{{ patient.name }}</td>
+      <td>{{ patient.age }}</td>
+      <td>{{ patient.domicile }}</td>
+      <td>{{ patient.occupation }}</td>
+      <td>{{ patient.gender }}</td>
+      <td>
+        <a href="{{ url_for('auth.edit_patient', patient_id=patient.id) }}" class="btn btn-sm btn-warning">Edit</a>
+        <form method="POST" action="{{ url_for('auth.delete_patient', patient_id=patient.id) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this patient?');">
+          <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

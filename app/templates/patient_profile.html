@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Profile{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+
+    <h2 class="mb-4 text-center">Patient Profile</h2>
+
+    <ul class="list-group mb-4 shadow-sm">
+      <li class="list-group-item"><strong>Name:</strong> {{ patient.name }}</li>
+      <li class="list-group-item"><strong>Age:</strong> {{ patient.age }}</li>
+      <li class="list-group-item"><strong>Gender:</strong> {{ patient.gender }}</li>
+      <li class="list-group-item"><strong>Domicile:</strong> {{ patient.domicile }}</li>
+      <li class="list-group-item"><strong>Occupation:</strong> {{ patient.occupation }}</li>
+      <li class="list-group-item"><strong>RFID UID:</strong> {{ patient.rfid_uid }}</li>
+    </ul>
+
+    {% if patient.notes %}
+    <div class="card shadow">
+      <div class="card-header bg-primary text-white">
+        Doctor's Notes History
+      </div>
+      <div class="card-body">
+        {% for note in patient.notes %}
+        <div class="mb-3 p-3 border rounded bg-light">
+          <p class="mb-1"><strong>Note {{ loop.index }}:</strong></p>
+          <p>{{ note.content }}</p>
+          {% if note.timestamp %}
+          <small class="text-muted">Added on: {{ note.timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% else %}
+    <div class="alert alert-warning mt-3">No doctor notes available yet.</div>
+    {% endif %}
+
+    <div class="mt-4">
+      <a href="{{ url_for('auth.logout_patient') }}" class="btn btn-secondary">Logout</a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Info{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm p-4">
+    <h2 class="text-center mb-4 text-primary">Patient Information</h2>
+
+    <ul class="list-group mb-3">
+        <li class="list-group-item"><strong>RFID UID:</strong> {{ patient.rfid_uid }}</li>
+        <li class="list-group-item"><strong>Name:</strong> {{ patient.name }}</li>
+        <li class="list-group-item"><strong>Age:</strong> {{ patient.age }}</li>
+        <li class="list-group-item"><strong>Gender:</strong> {{ patient.gender }}</li>
+        <li class="list-group-item"><strong>Place of Domicile:</strong> {{ patient.domicile }}</li>
+        <li class="list-group-item"><strong>Occupation:</strong> {{ patient.occupation }}</li>
+    </ul>
+
+    <div class="alert alert-info">
+        This is a quick identification view. To view full medical history and doctor notes, please <a href="{{ url_for('auth.patient_login') }}">log in securely</a>.
+    </div>
+
+    <a href="{{ url_for('auth.scan') }}" class="btn btn-secondary">Scan Another Card</a>
+</div>
+{% endblock %}

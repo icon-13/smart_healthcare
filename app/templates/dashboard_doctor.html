@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Doctor Dashboard</h2>
+<table border="1">
+    <tr>
+        <th>Name</th>
+        <th>UID</th>
+        <th>Actions</th>
+    </tr>
+    {% for p in patients %}
+    <tr>
+        <td>{{ p.name }}</td>
+        <td>{{ p.rfid_uid }}</td>
+        <td>
+            <a href="{{ url_for('patient.view_patient', uid=p.rfid_uid) }}">View</a> |
+            <a href="{{ url_for('auth.edit_patient', patient_id=patient.id) }}">Edit</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

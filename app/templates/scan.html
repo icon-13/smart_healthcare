@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Scan RFID Card{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Scan RFID Card</h5>
+            </div>
+            <div class="card-body">
+                <form id="scan-form" method="POST" action="{{ url_for('auth.scan') }}">
+                    <div class="mb-3">
+                        <label for="uid" class="form-label">RFID UID</label>
+                        <input type="text" name="uid" id="uid" class="form-control" placeholder="Waiting for card scan..." readonly>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 d-none">Scan</button>
+                </form>
+                <div id="status" class="text-muted mt-2 text-center">Waiting for card scan...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    setInterval(function () {
+        fetch('/api/get_latest_uid')
+            .then(response => response.json())
+            .then(data => {
+                if (data.uid && !document.getElementById('uid').value) {
+                    document.getElementById('uid').value = data.uid;
+                    document.getElementById('status').innerText = "Card detected. Submitting...";
+                    document.getElementById('scan-form').submit();
+                }
+            })
+            .catch(error => {
+                console.error("Error communicating with server:", error);
+                document.getElementById('status').innerText = "Error communicating with server";
+            });
+    }, 2000);
+</script>
+
+{% endblock %}
