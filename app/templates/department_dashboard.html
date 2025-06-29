@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>{{ department.name }} Department Dashboard</h2>
+
+  {% if referrals %}
+    <ul>
+      {% for r in referrals %}
+        <li>
+          <strong>Patient:</strong> {{ r.patient.name }} <br>
+          <strong>Reason:</strong> {{ r.reason }} <br>
+          <a href="{{ url_for('auth.process_referral', referral_id=r.id) }}">Process Referral</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No pending referrals at the moment.</p>
+  {% endif %}
+{% endblock %}

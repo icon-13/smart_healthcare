@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Unassigned Patients{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">Unassigned Patients</h2>
+
+  {% if patients %}
+    <div class="table-responsive">
+      <table class="table table-striped align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">RFID UID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Age</th>
+            <th scope="col">Gender</th>
+            <th scope="col">Domicile</th>
+            <th scope="col">Occupation</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for patient in patients %}
+            <tr>
+              <td>{{ patient.rfid_uid }}</td>
+              <td>{{ patient.name }}</td>
+              <td>{{ patient.age }}</td>
+              <td>{{ patient.gender }}</td>
+              <td>{{ patient.domicile }}</td>
+              <td>{{ patient.occupation }}</td>
+              <td>
+                {% if session.get('role') == 'doctor' %}
+                  <form method="POST" action="{{ url_for('auth.unassigned_patients') }}" class="d-inline">
+                    {{ claim_form.csrf_token }}
+                    <input type="hidden" name="patient_id" value="{{ patient.id }}">
+                    <button type="submit" name="claim" value="1" class="btn btn-sm btn-success">Claim</button>
+                  </form>
+                {% elif session.get('role') == 'receptionist' %}
+                  <form method="POST" action="{{ url_for('auth.unassigned_patients') }}" class="d-inline">
+                    {{ assign_form.csrf_token }}
+                    <input type="hidden" name="patient_id" value="{{ patient.id }}">
+                    <select name="doctor_id" class="form-select form-select-sm d-inline w-auto">
+                      {% for doc in assign_form.doctor_id.choices %}
+                        <option value="{{ doc[0] }}">{{ doc[1] }}</option>
+                      {% endfor %}
+                    </select>
+                    <button type="submit" name="assign" value="1" class="btn btn-sm btn-primary ms-1">Assign</button>
+                  </form>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-info">All patients are assigned! 🎉</div>
+  {% endif %}
+
+  <a href="{{ url_for('auth.home') }}" class="btn btn-secondary mt-3">Back to Home</a>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Refer Patient{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2>Refer Patient: {{ visit.patient.name }}</h2>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+      {{ form.department.label(class="form-label") }}
+      {{ form.department(class="form-select") }}
+    </div>
+    <div class="mb-3">
+      {{ form.reason.label(class="form-label") }}
+      {{ form.reason(class="form-control") }}
+    </div>
+    {{ form.submit(class="btn btn-primary") }}
+  </form>
+</div>
+{% endblock %}

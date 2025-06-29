@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Process Referral for {{ referral.patient.name }}</h2>
+
+  <p><strong>Department:</strong> {{ referral.department.name }}</p>
+  <p><strong>Reason:</strong> {{ referral.reason }}</p>
+
+  <form method="POST">
+    <button type="submit" class="btn btn-success">Mark as Completed</button>
+  </form>
+  
+  <a href="{{ url_for('auth.department_dashboard', dept_id=referral.department_id) }}">Back to Department Dashboard</a>
+{% endblock %}

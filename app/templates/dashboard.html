@@ -3,38 +3,44 @@
 {% block title %}Doctor Dashboard{% endblock %}
 
 {% block content %}
-<h2>Doctor Dashboard</h2>
-<p>Welcome, <strong>{{ current_user.username }}</strong></p>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Welcome, {{ current_user.username }}</h2>
+    <a href="{{ url_for('auth.unassigned_patients') }}" class="btn btn-secondary">
+        View Unassigned Patients
+    </a>
+</div>
 
-<h3 class="mb-4 mt-4">Patient List</h3>
-
-<table class="table table-striped table-bordered shadow-sm">
-  <thead class="table-primary">
-    <tr>
-      <th>Name</th>
-      <th>Age</th>
-      <th>Domicile</th>
-      <th>Occupation</th>
-      <th>Gender</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for patient in patients %}
-    <tr>
-      <td>{{ patient.name }}</td>
-      <td>{{ patient.age }}</td>
-      <td>{{ patient.domicile }}</td>
-      <td>{{ patient.occupation }}</td>
-      <td>{{ patient.gender }}</td>
-      <td>
-        <a href="{{ url_for('auth.edit_patient', patient_id=patient.id) }}" class="btn btn-sm btn-warning">Edit</a>
-        <form method="POST" action="{{ url_for('auth.delete_patient', patient_id=patient.id) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this patient?');">
-          <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-        </form>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
+<h4>Your Assigned Patients</h4>
+<table class="table table-bordered table-hover">
+    <thead class="table-light">
+        <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Domicile</th>
+            <th>Occupation</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for patient in patients %}
+        <tr>
+            <td>{{ patient.name }}</td>
+            <td>{{ patient.age }}</td>
+            <td>{{ patient.gender }}</td>
+            <td>{{ patient.domicile }}</td>
+            <td>{{ patient.occupation }}</td>
+            <td>
+                <a href="{{ url_for('auth.edit_patient', patient_id=patient.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                <form method="POST" action="{{ url_for('auth.delete_patient', patient_id=patient.id) }}">
+                  {{ delete_form.csrf_token }}
+                  <button type="submit">Delete</button>
+                </form>
+                
+              
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 {% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Assign Doctor{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Assign Doctor to <span class="text-primary">{{ patient.name }}</span></h2>
+
+    <form method="POST" class="mt-4">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+            {{ form.doctor_id.label(class="form-label") }}
+            {{ form.doctor_id(class="form-select") }}
+        </div>
+
+        <button type="submi{% extends "base.html" %}
+
+        {% block title %}Unassigned Patients{% endblock %}
+        
+        {% block content %}
+        <div class="container mt-4">
+            <h2 class="mb-4">Unassigned Patients</h2>
+        
+            {% if patients %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">RFID UID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Age</th>
+                                <th scope="col">Gender</th>
+                                <th scope="col">Domicile</th>
+                                <th scope="col">Occupation</th>
+                                <th scope="col" class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for patient in patients %}
+                            <tr>
+                                <th scope="row">{{ loop.index }}</th>
+                                <td>{{ patient.rfid_uid }}</td>
+                                <td>{{ patient.name }}</td>
+                                <td>{{ patient.age }}</td>
+                                <td>{{ patient.gender }}</td>
+                                <td>{{ patient.domicile }}</td>
+                                <td>{{ patient.occupation }}</td>
+                                <td class="text-center">
+                                    <form method="POST" action="{{ url_for('auth.claim_patient', patient_id=patient.id) }}">
+                                        {{ csrf_token() }}
+                                        <button type="submit" class="btn btn-sm btn-primary">Claim</button>
+                                    </form>
+                                    <a href="{{ url_for('auth.edit_patient', patient_id=patient.id) }}" class="btn btn-sm btn-secondary mt-1">Edit</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    There are no unassigned patients at the moment.
+                </div>
+            {% endif %}
+        </div>
+        {% endblock %}
+        t" class="btn btn-success">{{ form.submit.label.text }}</button>
+        <a href="{{ url_for('auth.unassigned_patients') }}" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+</div>
+{% endblock %}

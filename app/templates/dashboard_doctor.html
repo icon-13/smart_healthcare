@@ -1,21 +1,52 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h2>Doctor Dashboard</h2>
-<table border="1">
-    <tr>
+<div class="container mt-4">
+  <h2>Welcome, Dr. {{ current_user.username }}!</h2>
+  <hr>
+
+  {% if patients %}
+  <table class="table table-striped table-bordered">
+    <thead class="table-dark">
+      <tr>
         <th>Name</th>
-        <th>UID</th>
+        <th>RFID UID</th>
+        <th>Age</th>
+        <th>Gender</th>
+        <th>Domicile</th>
+        <th>Occupation</th>
         <th>Actions</th>
-    </tr>
-    {% for p in patients %}
-    <tr>
-        <td>{{ p.name }}</td>
-        <td>{{ p.rfid_uid }}</td>
+      </tr>
+    </thead>
+    <tbody>
+      {% for patient in patients %}
+      <tr>
+        <td>{{ patient.name }}</td>
+        <td>{{ patient.rfid_uid }}</td>
+        <td>{{ patient.age }}</td>
+        <td>{{ patient.gender }}</td>
+        <td>{{ patient.domicile }}</td>
+        <td>{{ patient.occupation }}</td>
         <td>
-            <a href="{{ url_for('patient.view_patient', uid=p.rfid_uid) }}">View</a> |
-            <a href="{{ url_for('auth.edit_patient', patient_id=patient.id) }}">Edit</a>
+          <!-- ✅ View details: correct route -->
+          <a href="{{ url_for('auth.patient_detail', patient_id=patient.id) }}" class="btn btn-sm btn-info">View Details</a>
+
+          <!-- ✅ Edit link (optional) -->
+          <a href="{{ url_for('doctor.edit_patient', patient_id=patient.id) }}" class="btn btn-sm btn-primary">Edit</a>
+
+          <!-- ✅ Delete: protected with hidden_tag -->
+          <form action="{{ url_for('doctor.delete_patient', patient_id=patient.id) }}" method="post" style="display:inline;">
+            {{ delete_form.hidden_tag() }}
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
         </td>
-    </tr>
-    {% endfor %}
-</table>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p>You have no patients assigned yet.</p>
+  {% endif %}
+
+</div>
 {% endblock %}

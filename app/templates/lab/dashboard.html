@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Lab Dashboard{% endblock %}
+
+{% block content %}
+<h2>Pending Lab Tests</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Patient</th>
+      <th>Test</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for test in tests %}
+    <tr>
+      <td>{{ test.patient.name }}</td>
+      <td>{{ test.lab_test.name }}</td>
+      <td>{{ test.status }}</td>
+      <td>
+        <a href="{{ url_for('lab.update_result', test_id=test.id) }}" class="btn btn-sm btn-primary">Update</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

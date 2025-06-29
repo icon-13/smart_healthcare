@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Update Test Result{% endblock %}
+
+{% block content %}
+<h2>Update Result for {{ test.lab_test.name }}</h2>
+
+<form method="POST">
+  <div class="mb-3">
+    <label for="result" class="form-label">Result:</label>
+    <textarea name="result" class="form-control" rows="5">{{ test.result or '' }}</textarea>
+  </div>
+  <button type="submit" class="btn btn-success">Save</button>
+  <a href="{{ url_for('lab.dashboard') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

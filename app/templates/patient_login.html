@@ -9,16 +9,26 @@
       <div class="card-body">
         <h3 class="card-title mb-4 text-center">Patient Login</h3>
         <form method="POST">
+          {{ form.hidden_tag() }}
+
           <div class="mb-3">
-            <label for="rfid_uid" class="form-label">RFID UID</label>
-            <input type="text" name="rfid_uid" class="form-control" required>
+            {{ form.rfid_uid.label(class="form-label") }}
+            {{ form.rfid_uid(class="form-control") }}
+            {% for error in form.rfid_uid.errors %}
+              <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
           </div>
+
           <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" name="password" class="form-control" required>
+            {{ form.password.label(class="form-label") }}
+            {{ form.password(class="form-control") }}
+            {% for error in form.password.errors %}
+              <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
           </div>
+
           <div class="d-grid">
-            <button type="submit" class="btn btn-primary">Login</button>
+            {{ form.submit(class="btn btn-primary") }}
           </div>
         </form>
       </div>

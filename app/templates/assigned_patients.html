@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Assigned Patients{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">Assigned Patients</h2>
+
+  <form method="get" class="row mb-4 g-2">
+    <div class="col-md-4">
+      <input type="text" name="search" class="form-control" placeholder="Search by patient name" value="{{ search }}">
+    </div>
+
+    {% if session.get('role') == 'receptionist' %}
+      <div class="col-md-4">
+        <select name="doctor_id" class="form-select">
+          <option value="">-- Filter by Doctor --</option>
+          {% for id, doc in doctors.items() %}
+            <option value="{{ id }}" {% if id|string == doctor_id %}selected{% endif %}>Dr. {{ doc.username }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    {% endif %}
+
+    <div class="col-md-4">
+      <button type="submit" class="btn btn-primary">Search & Filter</button>
+    </div>
+  </form>
+
+  {% if patients %}
+    <div class="table-responsive">
+      <table class="table table-striped align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">RFID UID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Age</th>
+            <th scope="col">Gender</th>
+            <th scope="col">Domicile</th>
+            <th scope="col">Occupation</th>
+            <th scope="col">Assigned Doctor</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for patient in patients %}
+            <tr>
+              <td>{{ patient.rfid_uid }}</td>
+              <td>{{ patient.name }}</td>
+              <td>{{ patient.age }}</td>
+              <td>{{ patient.gender }}</td>
+              <td>{{ patient.domicile }}</td>
+              <td>{{ patient.occupation }}</td>
+              <td>Dr. {{ doctors[patient.doctor_id].username }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-info">No assigned patients found for your filter.</div>
+  {% endif %}
+
+  <a href="{{ url_for('auth.home') }}" class="btn btn-secondary mt-3">Back to Home</a>
+</div>
+{% endblock %}

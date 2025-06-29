@@ -27,5 +27,4 @@ wsproto==1.2.0
 gunicorn
 psycopg2-binary>=2.9
 flask-migrate
-
-flask-migrate
+Flask-WTF
