@@ -6,6 +6,8 @@ class Doctor(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
+    photo = db.Column(db.String(200), nullable=True)  # 🔸 Add this line
+
 
 class Patient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -16,6 +18,8 @@ class Patient(db.Model):
     domicile = db.Column(db.String(100), nullable=False)
     occupation = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(200), nullable=False)
+    photo = db.Column(db.String(200), nullable=True)  # 🔸 Add this line
+
 
     # Relationship with notes
     notes = db.relationship('Note', back_populates='patient', cascade='all, delete-orphan', lazy=True)

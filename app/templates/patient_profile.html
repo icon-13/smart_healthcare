@@ -8,6 +8,16 @@
 
     <h2 class="mb-4 text-center">Patient Profile</h2>
 
+    <!-- Patient photo -->
+    {% if patient.photo %}
+    <div class="text-center mb-4">
+      <img src="{{ url_for('static', filename='uploads/' + patient.photo) }}" 
+           alt="Patient Photo" 
+           class="img-thumbnail" 
+           style="max-width: 200px; max-height: 200px; object-fit: cover;">
+    </div>
+    {% endif %}
+
     <ul class="list-group mb-4 shadow-sm">
       <li class="list-group-item"><strong>Name:</strong> {{ patient.name }}</li>
       <li class="list-group-item"><strong>Age:</strong> {{ patient.age }}</li>

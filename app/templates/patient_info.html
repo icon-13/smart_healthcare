@@ -6,6 +6,15 @@
 <div class="card shadow-sm p-4">
     <h2 class="text-center mb-4 text-primary">Patient Information</h2>
 
+    {% if patient.photo %}
+    <div class="text-center mb-4">
+        <img src="{{ url_for('static', filename='uploads/' + patient.photo) }}" 
+             alt="Patient Photo"
+             class="img-thumbnail"
+             style="max-width: 200px; max-height: 200px; object-fit: cover;">
+    </div>
+    {% endif %}
+
     <ul class="list-group mb-3">
         <li class="list-group-item"><strong>RFID UID:</strong> {{ patient.rfid_uid }}</li>
         <li class="list-group-item"><strong>Name:</strong> {{ patient.name }}</li>

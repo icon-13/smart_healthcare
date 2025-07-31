@@ -22,17 +22,39 @@ def load_user(user_id):
     return Doctor.query.get(int(user_id))
 
 # --- Doctor Sign Up ---
+import os
+from flask import Blueprint, render_template, redirect, request, url_for, flash, current_app
+from werkzeug.security import generate_password_hash
+from werkzeug.utils import secure_filename
+
+from app import db
+from app.models import Doctor
+
+
+
 @auth_bp.route('/signup_doctor', methods=['GET', 'POST'])
 def signup_doctor():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
+        photo_file = request.files.get('photo')
 
         if Doctor.query.filter_by(username=username).first():
             flash("Username already exists!", "danger")
             return redirect(url_for('auth.signup_doctor'))
 
-        new_doc = Doctor(username=username, password=generate_password_hash(password))
+        photo_filename = None
+        if photo_file and photo_file.filename != '':
+            upload_folder = current_app.config['UPLOAD_FOLDER']
+            if not os.path.exists(upload_folder):
+                os.makedirs(upload_folder)
+            photo_filename = secure_filename(photo_file.filename)
+            photo_path = os.path.join(upload_folder, photo_filename)
+            photo_file.save(photo_path)
+
+        new_doc = Doctor(username=username,
+                         password=generate_password_hash(password),
+                         photo=photo_filename)
         db.session.add(new_doc)
         db.session.commit()
         flash("Doctor account created!", "success")
@@ -66,6 +88,10 @@ def logout():
     return redirect(url_for('auth.login'))
 
 # --- Patient Sign Up ---
+import os
+from werkzeug.utils import secure_filename
+from flask import current_app
+
 @auth_bp.route('/signup_patient', methods=['GET', 'POST'])
 def signup_patient():
     if request.method == 'POST':
@@ -76,6 +102,16 @@ def signup_patient():
         domicile = request.form.get('domicile')
         occupation = request.form.get('occupation')
         password = request.form.get('password')
+        photo_file = request.files.get('photo')
+
+        photo_filename = None
+        if photo_file and photo_file.filename != '':
+            filename = secure_filename(photo_file.filename)
+            upload_folder = current_app.config['UPLOAD_FOLDER']
+            os.makedirs(upload_folder, exist_ok=True)
+            photo_path = os.path.join(upload_folder, filename)
+            photo_file.save(photo_path)
+            photo_filename = filename
 
         new_patient = Patient(
             rfid_uid=uid,
@@ -84,12 +120,13 @@ def signup_patient():
             gender=gender,
             domicile=domicile,
             occupation=occupation,
-            password=generate_password_hash(password)
+            password=generate_password_hash(password),
+            photo=photo_filename
         )
         db.session.add(new_patient)
         db.session.commit()
 
-        latest_uid["uid"] = None  # ✅ Clear the UID after registration
+        latest_uid["uid"] = None  # Clear the UID after registration
 
         flash("Patient registered successfully!", "success")
         return redirect(url_for('auth.view_patient_info', uid=uid))
