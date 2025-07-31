@@ -1,7 +1,6 @@
 from app import create_app, db
 from app.models import Patient, Doctor  # User is the doctor model
 
-
 app = create_app()
 
 # Flask shell context for easy DB access
@@ -10,6 +9,7 @@ def make_shell_context():
     return {'db': db, 'Patient': Patient, 'Doctor': Doctor}
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()  # ✅ This creates db.sqlite3 if not present
+
     app.run(host='0.0.0.0', port=8000, debug=True)
-
-
