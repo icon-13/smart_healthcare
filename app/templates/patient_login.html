@@ -21,6 +21,12 @@
             <button type="submit" class="btn btn-primary">Login</button>
           </div>
         </form>
+
+        <!-- Forgot password link -->
+        <div class="text-center mt-3">
+          <a href="{{ url_for('auth.reset_patient_password') }}" class="text-decoration-none">Forgot your password?</a>
+        </div>
+
       </div>
     </div>
   </div>

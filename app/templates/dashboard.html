@@ -11,7 +11,7 @@
        class="rounded-circle me-3" 
        style="width: 60px; height: 60px; object-fit: cover; border: 2px solid #0d6efd;">
   {% endif %}
-  <p class="mb-0">Welcome, <strong>{{ current_user.username }}</strong></p>
+  <p class="mb-0">Welcome, Dr <strong>{{ current_user.username }}</strong></p>
 </div>
 
 <h3 class="mb-4 mt-4">Patient List</h3>
@@ -19,6 +19,7 @@
 <table class="table table-striped table-bordered shadow-sm">
   <thead class="table-primary">
     <tr>
+      <th>UID</th>  <!-- Added -->
       <th>Name</th>
       <th>Age</th>
       <th>Domicile</th>
@@ -30,6 +31,7 @@
   <tbody>
     {% for patient in patients %}
     <tr>
+      <td>{{ patient.rfid_uid }}</td>  <!-- Added -->
       <td>{{ patient.name }}</td>
       <td>{{ patient.age }}</td>
       <td>{{ patient.domicile }}</td>
@@ -45,4 +47,5 @@
     {% endfor %}
   </tbody>
 </table>
+
 {% endblock %}

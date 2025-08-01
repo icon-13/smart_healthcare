@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Admin Dashboard</h2>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">Add New Doctor</div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('auth.add_doctor') }}" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="photo" class="form-label">Doctor Photo</label>
+                    <input type="file" name="photo" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-success">Add Doctor</button>
+            </form>
+        </div>
+    </div>
+
+    <h4>Registered Doctors</h4>
+    <ul class="list-group">
+        {% for doctor in doctors %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                {{ doctor.username }}
+                {% if doctor.photo %}
+                    <img src="{{ url_for('static', filename='uploads/' ~ doctor.photo) }}"
+                         alt="photo" class="rounded ms-2" style="height: 40px;">
+                {% endif %}
+            </div>
+            <div>
+                <a href="{{ url_for('auth.edit_doctor', doctor_id=doctor.id) }}" class="btn btn-sm btn-primary me-2">Edit</a>
+                <form method="POST" action="{{ url_for('auth.delete_doctor', doctor_id=doctor.id) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this doctor?');">
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    
+</div>
+{% endblock %}

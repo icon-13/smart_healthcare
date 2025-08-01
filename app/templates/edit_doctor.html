@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Doctor{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Edit Doctor: {{ doctor.username }}</h2>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" name="username" class="form-control" value="{{ doctor.username }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="photo" class="form-label">Doctor Photo</label>
+            {% if doctor.photo %}
+                <img src="{{ url_for('static', filename='uploads/' ~ doctor.photo) }}" alt="photo" class="rounded mb-2" style="height: 100px;">
+            {% endif %}
+            <input type="file" name="photo" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Update Doctor</button>
+        <a href="{{ url_for('auth.admin_dashboard') }}" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+</div>
+{% endblock %}
