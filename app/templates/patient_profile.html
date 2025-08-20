@@ -38,7 +38,9 @@
           <p class="mb-1"><strong>Note {{ loop.index }}:</strong></p>
           <p>{{ note.content }}</p>
           {% if note.timestamp %}
-          <small class="text-muted">Added on: {{ note.timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
+          <small class="text-muted">Added on: {{ note.timestamp.strftime('%Y-%m-%d %H:%M') }}
+            by Dr. {{ note.doctor.username if note.doctor else 'Unknown' }}
+          </small>
           {% endif %}
         </div>
         {% endfor %}

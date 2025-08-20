@@ -111,6 +111,7 @@ def logout():
 import os
 from werkzeug.utils import secure_filename
 from flask import current_app
+from flask_login import current_user
 
 @auth_bp.route('/signup_patient', methods=['GET', 'POST'])
 def signup_patient():
@@ -125,8 +126,8 @@ def signup_patient():
         confirm_password = request.form.get('confirm_password')
 
         if password != confirm_password:
-             flash("Passwords do not match!", "danger")
-             return redirect(url_for('auth.signup_patient', uid=uid))
+            flash("Passwords do not match!", "danger")
+            return redirect(url_for('auth.signup_patient', uid=uid))
 
         photo_file = request.files.get('photo')
 
@@ -139,6 +140,9 @@ def signup_patient():
             photo_file.save(photo_path)
             photo_filename = filename
 
+        # ✅ Link patient to the doctor currently logged in (if doctor is logged in)
+        doctor_id = current_user.id if hasattr(current_user, "id") else None
+
         new_patient = Patient(
             rfid_uid=uid,
             name=name,
@@ -147,7 +151,8 @@ def signup_patient():
             domicile=domicile,
             occupation=occupation,
             password=generate_password_hash(password),
-            photo=photo_filename
+            photo=photo_filename,
+            doctor_id=doctor_id   # 🔥 save the doctor who registered this patient
         )
         db.session.add(new_patient)
         db.session.commit()
@@ -223,7 +228,8 @@ def edit_patient(patient_id):
 
         notes_text = request.form.get('notes')
         if notes_text:
-            new_note = Note(content=notes_text, patient=patient)
+            # ⚡ Tweak: link note to current doctor
+            new_note = Note(content=notes_text, patient=patient, doctor_id=current_user.id)
             db.session.add(new_note)
 
         db.session.commit()
@@ -363,24 +369,40 @@ def admin_dashboard():
     doctors = Doctor.query.all()
     return render_template('admin_dashboard.html', doctors=doctors)
 
+#admin add doctor
+import os
+from werkzeug.utils import secure_filename
+
+UPLOAD_FOLDER = os.path.join('static', 'uploads')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Ensure folder exists
 
 @auth_bp.route('/admin/add_doctor', methods=['POST'])
 @login_required
 @admin_required
 def add_doctor():
-    username = request.form['username']
-    password = request.form['password']
-    photo = request.files['photo']
+    username = request.form.get('username')
+    password = request.form.get('password')
+    confirm_password = request.form.get('confirm_password')  # ✅ added confirm password
+    photo = request.files.get('photo')  # Use .get() to avoid KeyError
 
+    # ✅ check password confirmation
+    if password != confirm_password:
+        flash("Passwords do not match.", "danger")
+        return redirect(url_for('auth.admin_dashboard'))
+
+    # ✅ check duplicate username
     if Doctor.query.filter_by(username=username).first():
         flash("Doctor already exists.", "danger")
         return redirect(url_for('auth.admin_dashboard'))
 
+    # ✅ save photo if provided
     filename = None
-    if photo:
+    if photo and photo.filename:  # Check if file is selected
         filename = secure_filename(photo.filename)
-        photo.save(os.path.join('static/uploads', filename))
+        photo_path = os.path.join(UPLOAD_FOLDER, filename)
+        photo.save(photo_path)
 
+    # ✅ hash and save doctor
     hashed_password = generate_password_hash(password)
     new_doctor = Doctor(username=username, password=hashed_password, photo=filename)
     db.session.add(new_doctor)
@@ -388,6 +410,7 @@ def add_doctor():
 
     flash("Doctor added successfully.", "success")
     return redirect(url_for('auth.admin_dashboard'))
+
  
 # doctor rest password    
 @auth_bp.route('/reset_password', methods=['GET', 'POST'])
@@ -418,7 +441,7 @@ def reset_password():
 
     return render_template('reset_password.html')
 
-
+#forgot password
 @auth_bp.route('/doctor/forgot_password', methods=['GET', 'POST'])
 def forgot_doctor_password():
     if request.method == 'POST':
@@ -432,7 +455,7 @@ def forgot_doctor_password():
 
     return render_template('forgot_doctor_password.html')
 
-
+# doctor reset password
 @auth_bp.route('/doctor/reset_password/<username>', methods=['GET', 'POST'])
 def reset_doctor_password(username):
     doctor = Doctor.query.filter_by(username=username).first()
@@ -490,7 +513,7 @@ def edit_doctor(doctor_id):
 
     return render_template('edit_doctor.html', doctor=doctor)
 
-
+#delete doctor (admin)
 @auth_bp.route('/admin/delete_doctor/<int:doctor_id>', methods=['POST'])
 @login_required
 @admin_required
