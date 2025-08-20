@@ -1,7 +1,13 @@
 from app import create_app, db
 from app.models import Patient, Doctor  # User is the doctor model
+from datetime import datetime
 
 app = create_app()
+
+# Inject current year into all templates
+@app.context_processor
+def inject_current_year():
+    return {'current_year': datetime.now().year}
 
 # Flask shell context for easy DB access
 @app.shell_context_processor

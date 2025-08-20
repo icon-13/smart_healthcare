@@ -1,43 +1,55 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Doctor - Patient Records</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-</head>
-<body class="p-4">
-    <h2>All Registered Patients</h2>
+{% extends "base.html" %}
 
-    <a href="{{ url_for('auth.logout') }}" class="btn btn-danger mb-3">Logout</a>
+{% block title %}Doctor - Patient Records{% endblock %}
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>RFID UID</th>
-                <th>Name</th>
-                <th>Age</th>
-                <th>Gender</th>
-                <th>Domicile</th>
-                <th>Occupation</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for patient in patients %}
-            <tr>
-                <td>{{ patient.rfid_uid }}</td>
-                <td>{{ patient.name }}</td>
-                <td>{{ patient.age }}</td>
-                <td>{{ patient.gender }}</td>
-                <td>{{ patient.domicile }}</td>
-                <td>{{ patient.occupation }}</td>
-                <td>
-                    <a href="{{ url_for('auth.edit_patient', patient_id=patient.id) }}" class="btn btn-sm btn-warning">Edit</a>
-                    <a href="{{ url_for('auth.delete_patient', patient_id=patient.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+{% block content %}
+<div class="container mt-4">
 
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</body>
-</html>
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 p-3 bg-light rounded shadow-sm">
+        <h2 class="mb-0">All Registered Patients</h2>
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">Logout</a>
+    </div>
+
+    {% if patients %}
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-hover table-striped align-middle">
+            <thead class="table-primary text-center">
+                <tr>
+                    <th>RFID UID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Domicile</th>
+                    <th>Occupation</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for patient in patients %}
+                <tr>
+                    <td class="text-center">{{ patient.rfid_uid }}</td>
+                    <td>{{ patient.name }}</td>
+                    <td class="text-center">{{ patient.age }}</td>
+                    <td class="text-center">{{ patient.gender }}</td>
+                    <td>{{ patient.domicile }}</td>
+                    <td>{{ patient.occupation }}</td>
+                    <td class="text-center">
+                        <a href="{{ url_for('auth.edit_patient', patient_id=patient.id) }}" class="btn btn-sm btn-warning me-1">Edit</a>
+                        <form method="POST" action="{{ url_for('auth.delete_patient', patient_id=patient.id) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this patient?');">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center shadow-sm mt-3">
+        No patients registered yet.
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

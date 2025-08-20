@@ -3,22 +3,45 @@
 {% block title %}Patient Profile{% endblock %}
 
 {% block content %}
+<style>
+    .profile-card {
+        border-radius: 15px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .profile-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    .note-card {
+        transition: transform 0.2s ease;
+    }
+    .note-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+    .section-title {
+        border-bottom: 2px solid #0d6efd;
+        padding-bottom: 5px;
+        margin-bottom: 15px;
+    }
+</style>
+
 <div class="row justify-content-center">
   <div class="col-md-8">
 
-    <h2 class="mb-4 text-center">Patient Profile</h2>
+    <h2 class="text-center mb-4 section-title text-primary">Patient Profile</h2>
 
     <!-- Patient photo -->
     {% if patient.photo %}
     <div class="text-center mb-4">
       <img src="{{ url_for('static', filename='uploads/' + patient.photo) }}" 
            alt="Patient Photo" 
-           class="img-thumbnail" 
+           class="img-thumbnail shadow profile-card" 
            style="max-width: 200px; max-height: 200px; object-fit: cover;">
     </div>
     {% endif %}
 
-    <ul class="list-group mb-4 shadow-sm">
+    <ul class="list-group mb-4 shadow profile-card">
       <li class="list-group-item"><strong>Name:</strong> {{ patient.name }}</li>
       <li class="list-group-item"><strong>Age:</strong> {{ patient.age }}</li>
       <li class="list-group-item"><strong>Gender:</strong> {{ patient.gender }}</li>
@@ -28,18 +51,18 @@
     </ul>
 
     {% if patient.notes %}
-    <div class="card shadow">
-      <div class="card-header bg-primary text-white">
+    <div class="card shadow profile-card">
+      <div class="card-header bg-primary text-white fw-bold">
         Doctor's Notes History
       </div>
       <div class="card-body">
         {% for note in patient.notes %}
-        <div class="mb-3 p-3 border rounded bg-light">
+        <div class="mb-3 p-3 border rounded bg-light note-card">
           <p class="mb-1"><strong>Note {{ loop.index }}:</strong></p>
           <p>{{ note.content }}</p>
           {% if note.timestamp %}
-          <small class="text-muted">Added on: {{ note.timestamp.strftime('%Y-%m-%d %H:%M') }}
-            by Dr. {{ note.doctor.username if note.doctor else 'Unknown' }}
+          <small class="text-muted">
+            Added on: {{ note.timestamp.strftime('%Y-%m-%d %H:%M') }} by Dr. {{ note.doctor.username if note.doctor else 'Unknown' }}
           </small>
           {% endif %}
         </div>
@@ -50,8 +73,8 @@
     <div class="alert alert-warning mt-3">No doctor notes available yet.</div>
     {% endif %}
 
-    <div class="mt-4">
-      <a href="{{ url_for('auth.logout_patient') }}" class="btn btn-secondary">Logout</a>
+    <div class="mt-4 text-center">
+      <a href="{{ url_for('auth.logout_patient') }}" class="btn btn-secondary btn-lg">Logout</a>
     </div>
 
   </div>

@@ -3,32 +3,48 @@
 {% block title %}Patient Login{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-6">
-    <div class="card shadow">
-      <div class="card-body">
-        <h3 class="card-title mb-4 text-center">Patient Login</h3>
+<style>
+    body {
+        background: linear-gradient(135deg, #e3f2fd, #ffffff);
+    }
+    .login-card {
+        border-radius: 15px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .login-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+    .btn-login {
+        border-radius: 50px;
+        padding: 0.6rem;
+        transition: transform 0.2s ease;
+    }
+    .btn-login:hover {
+        transform: scale(1.05);
+    }
+</style>
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow login-card p-4" style="width: 100%; max-width: 400px;">
+        <h3 class="text-center mb-4 fw-bold text-primary">Patient Login</h3>
         <form method="POST">
-          <div class="mb-3">
-            <label for="rfid_uid" class="form-label">RFID UID</label>
-            <input type="text" name="rfid_uid" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" name="password" class="form-control" required>
-          </div>
-          <div class="d-grid">
-            <button type="submit" class="btn btn-primary">Login</button>
-          </div>
+            <div class="mb-3">
+                <label for="rfid_uid" class="form-label">RFID UID</label>
+                <input type="text" name="rfid_uid" class="form-control" placeholder="Enter your RFID UID" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-login">Login</button>
+            </div>
         </form>
 
-        <!-- Forgot password link -->
         <div class="text-center mt-3">
-          <a href="{{ url_for('auth.reset_patient_password') }}" class="text-decoration-none">Forgot your password?</a>
+            <a href="{{ url_for('auth.reset_patient_password') }}" class="text-decoration-none text-secondary">Forgot your password?</a>
         </div>
-
-      </div>
     </div>
-  </div>
 </div>
 {% endblock %}

@@ -3,19 +3,47 @@
 {% block title %}Patient Info{% endblock %}
 
 {% block content %}
-<div class="card shadow-sm p-4">
-    <h2 class="text-center mb-4 text-primary">Patient Information</h2>
+<style>
+    .patient-card {
+        border-radius: 15px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .patient-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+    .patient-photo {
+        border-radius: 50%;
+        border: 3px solid #0d6efd;
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+    }
+    .list-group-item {
+        font-size: 1rem;
+    }
+    .scan-btn {
+        border-radius: 50px;
+        padding: 0.6rem 1.2rem;
+        transition: transform 0.2s ease;
+    }
+    .scan-btn:hover {
+        transform: scale(1.05);
+    }
+</style>
+
+<div class="card shadow-sm p-4 patient-card mx-auto" style="max-width: 500px;">
+    <h2 class="text-center mb-4 text-primary fw-bold">Patient Information</h2>
 
     {% if patient.photo %}
     <div class="text-center mb-4">
         <img src="{{ url_for('static', filename='uploads/' + patient.photo) }}" 
              alt="Patient Photo"
-             class="img-thumbnail"
-             style="max-width: 200px; max-height: 200px; object-fit: cover;">
+             class="patient-photo">
     </div>
     {% endif %}
 
-    <ul class="list-group mb-3">
+    <ul class="list-group mb-3 shadow-sm">
         <li class="list-group-item"><strong>RFID UID:</strong> {{ patient.rfid_uid }}</li>
         <li class="list-group-item"><strong>Name:</strong> {{ patient.name }}</li>
         <li class="list-group-item"><strong>Age:</strong> {{ patient.age }}</li>
@@ -24,10 +52,12 @@
         <li class="list-group-item"><strong>Occupation:</strong> {{ patient.occupation }}</li>
     </ul>
 
-    <div class="alert alert-info">
-        This is a quick identification view. To view full medical history and doctor notes, please <a href="{{ url_for('auth.patient_login') }}">log in securely</a>.
+    <div class="alert alert-info text-center">
+        <i class="bi bi-info-circle-fill"></i> Quick identification view. To view full medical history and doctor notes, please <a href="{{ url_for('auth.patient_login') }}">log in securely</a>.
     </div>
 
-    <a href="{{ url_for('auth.scan') }}" class="btn btn-secondary">Scan Another Card</a>
+    <div class="text-center mt-3">
+        <a href="{{ url_for('auth.scan') }}" class="btn btn-primary scan-btn">📡 Scan Another Card</a>
+    </div>
 </div>
 {% endblock %}

@@ -3,62 +3,77 @@
 {% block title %}Edit Patient{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>Edit Patient</h2>
+<div class="container mt-5">
+    <div class="card shadow-sm p-4">
+        <h2 class="mb-4 text-center">Edit Patient: <strong>{{ patient.name }}</strong></h2>
 
-    <form method="POST" class="mb-4">
-        <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
-            <input type="text" id="name" name="name" class="form-control" value="{{ patient.name }}" required>
-        </div>
+        <form method="POST">
 
-        <div class="mb-3">
-            <label for="age" class="form-label">Age</label>
-            <input type="number" id="age" name="age" class="form-control" value="{{ patient.age }}" required>
-        </div>
+            <!-- Name -->
+            <div class="mb-3">
+                <label for="name" class="form-label fw-bold">Name</label>
+                <input type="text" id="name" name="name" class="form-control form-control-lg" value="{{ patient.name }}" required>
+            </div>
 
-        <div class="mb-3">
-            <label for="gender" class="form-label">Gender</label>
-            <select id="gender" name="gender" class="form-select" required>
-                <option value="Male" {% if patient.gender == 'Male' %}selected{% endif %}>Male</option>
-                <option value="Female" {% if patient.gender == 'Female' %}selected{% endif %}>Female</option>
-            </select>
-        </div>
+            <!-- Age -->
+            <div class="mb-3">
+                <label for="age" class="form-label fw-bold">Age</label>
+                <input type="number" id="age" name="age" class="form-control form-control-lg" value="{{ patient.age }}" required>
+            </div>
 
-        <div class="mb-3">
-            <label for="domicile" class="form-label">Domicile</label>
-            <input type="text" id="domicile" name="domicile" class="form-control" value="{{ patient.domicile }}" required>
-        </div>
+            <!-- Gender -->
+            <div class="mb-3">
+                <label for="gender" class="form-label fw-bold">Gender</label>
+                <select id="gender" name="gender" class="form-select form-select-lg" required>
+                    <option value="Male" {% if patient.gender == 'Male' %}selected{% endif %}>Male</option>
+                    <option value="Female" {% if patient.gender == 'Female' %}selected{% endif %}>Female</option>
+                </select>
+            </div>
 
-        <div class="mb-3">
-            <label for="occupation" class="form-label">Occupation</label>
-            <input type="text" id="occupation" name="occupation" class="form-control" value="{{ patient.occupation }}" required>
-        </div>
+            <!-- Domicile -->
+            <div class="mb-3">
+                <label for="domicile" class="form-label fw-bold">Domicile</label>
+                <input type="text" id="domicile" name="domicile" class="form-control form-control-lg" value="{{ patient.domicile }}" required>
+            </div>
 
-        <div class="mb-3">
-            <label for="notes" class="form-label">Add New Doctor Note</label>
-            <textarea id="notes" name="notes" rows="5" class="form-control" placeholder="Write new note here..."></textarea>
-            <div class="form-text">Enter medication, diagnosis, visit plan, etc.</div>
-        </div>
+            <!-- Occupation -->
+            <div class="mb-3">
+                <label for="occupation" class="form-label fw-bold">Occupation</label>
+                <input type="text" id="occupation" name="occupation" class="form-control form-control-lg" value="{{ patient.occupation }}" required>
+            </div>
 
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-        <a href="{{ url_for('auth.doctor_dashboard') }}" class="btn btn-secondary ms-2">Cancel</a>
-    </form>
+            <!-- New Doctor Note -->
+            <div class="mb-3">
+                <label for="notes" class="form-label fw-bold">Add New Doctor Note</label>
+                <textarea id="notes" name="notes" rows="5" class="form-control form-control-lg" placeholder="Write new note here..."></textarea>
+                <div class="form-text">Enter medication, diagnosis, visit plan, etc.</div>
+            </div>
 
-    {% if patient.notes %}
-        <hr class="my-4">
-        <h4>Previous Doctor Notes</h4>
-        <ul class="list-group">
-            {% for note in patient.notes %}
-                <li class="list-group-item">
-                    <strong>Note {{ loop.index }}:</strong>
-                    <p class="mb-1">{{ note.content }}</p>
-                    <small class="text-muted">Added on: {{ note.timestamp.strftime('%Y-%m-%d %H:%M') if note.timestamp else 'Unknown date' }}</small>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <div class="alert alert-info mt-4">No previous notes available for this patient.</div>
-    {% endif %}
+            <!-- Buttons -->
+            <div class="d-flex justify-content-center mt-4">
+                <button type="submit" class="btn btn-success btn-lg me-3">Save Changes</button>
+                <a href="{{ url_for('auth.doctor_dashboard') }}" class="btn btn-secondary btn-lg">Cancel</a>
+            </div>
+
+        </form>
+
+        <!-- Previous Notes -->
+        {% if patient.notes %}
+            <hr class="my-5">
+            <h4 class="text-center mb-3">Previous Doctor Notes</h4>
+            <ul class="list-group shadow-sm">
+                {% for note in patient.notes %}
+                    <li class="list-group-item mb-2">
+                        <strong>Note {{ loop.index }}:</strong>
+                        <p class="mb-1">{{ note.content }}</p>
+                        <small class="text-muted">Added on: {{ note.timestamp.strftime('%Y-%m-%d %H:%M') if note.timestamp else 'Unknown date' }}</small>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="alert alert-info mt-4 text-center">No previous notes available for this patient.</div>
+        {% endif %}
+
+    </div>
 </div>
 {% endblock %}

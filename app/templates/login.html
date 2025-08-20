@@ -1,26 +1,53 @@
 {% extends "base.html" %}
 
+{% block title %}Staff Login{% endblock %}
+
 {% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #f0f8ff, #ffffff);
+    }
+    .login-card {
+        border-radius: 15px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .login-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    }
+    .login-card .btn {
+        border-radius: 50px;
+        font-weight: 600;
+        padding: 0.75rem 1rem;
+        transition: transform 0.2s;
+    }
+    .login-card .btn:hover {
+        transform: scale(1.05);
+    }
+    .forgot-link {
+        font-size: 0.9rem;
+    }
+</style>
+
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-    <div class="card p-4 shadow" style="width: 100%; max-width: 400px;">
-        <h3 class="text-center mb-4">Staff Login</h3>
+    <div class="card p-4 shadow login-card" style="width: 100%; max-width: 400px;">
+        <h3 class="text-center mb-4 fw-bold text-primary">🧑‍⚕️ Staff Login</h3>
         <form method="POST">
             <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
-                <input type="text" name="username" class="form-control" required>
+                <input type="text" name="username" class="form-control" placeholder="Enter username" required>
             </div>
 
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
-                <input type="password" name="password" class="form-control" required>
+                <input type="password" name="password" class="form-control" placeholder="Enter password" required>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Login</button>
+            <button type="submit" class="btn btn-primary w-100 mb-2">Login</button>
         </form>
-        <div class="text-center mt-2">
+        <div class="text-center mt-2 forgot-link">
             <a href="{{ url_for('auth.forgot_doctor_password') }}">Forgot Password? Reset here</a>
         </div>
-        
     </div>
 </div>
 {% endblock %}

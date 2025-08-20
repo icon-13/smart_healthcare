@@ -3,20 +3,34 @@
 {% block title %}Scan RFID Card{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center mt-4">
+<style>
+    .card-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    #status {
+        font-style: italic;
+    }
+</style>
+
+<div class="row justify-content-center mt-5">
     <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
+        <div class="card shadow card-hover">
+            <div class="card-header bg-primary text-white text-center">
                 <h5 class="mb-0">Scan RFID Card or Enter UID Manually</h5>
             </div>
             <div class="card-body">
                 <form id="scan-form" method="POST" action="{{ url_for('auth.scan') }}">
                     <div class="mb-3">
                         <label for="uid" class="form-label">RFID UID</label>
-                        <!-- Make input editable for manual input -->
                         <input type="text" name="uid" id="uid" class="form-control" placeholder="Scan card or enter UID manually" autocomplete="off" autofocus>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Submit UID</button>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">Submit UID</button>
+                    </div>
                 </form>
                 <div id="status" class="text-muted mt-2 text-center">Waiting for card scan...</div>
             </div>
@@ -34,14 +48,13 @@
                 const statusDiv = document.getElementById('status');
 
                 if (data.uid) {
-                    // Only overwrite input if it is empty (so user typing not interrupted)
+                    // Only overwrite input if it is empty
                     if (!uidInput.value) {
                         uidInput.value = data.uid;
                         statusDiv.innerText = "Card detected. Auto-submitting...";
                         document.getElementById('scan-form').submit();
                     }
                 } else {
-                    // No UID from scanner
                     statusDiv.innerText = "Waiting for card scan... Or enter UID manually and submit.";
                 }
             })
@@ -51,5 +64,4 @@
             });
     }, 2000);
 </script>
-
 {% endblock %}
