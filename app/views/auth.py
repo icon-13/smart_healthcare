@@ -372,9 +372,7 @@ def admin_dashboard():
 #admin add doctor
 import os
 from werkzeug.utils import secure_filename
-
-UPLOAD_FOLDER = os.path.join('static', 'uploads')
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Ensure folder exists
+from flask import current_app
 
 @auth_bp.route('/admin/add_doctor', methods=['POST'])
 @login_required
@@ -382,27 +380,29 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Ensure folder exists
 def add_doctor():
     username = request.form.get('username')
     password = request.form.get('password')
-    confirm_password = request.form.get('confirm_password')  # ✅ added confirm password
-    photo = request.files.get('photo')  # Use .get() to avoid KeyError
+    confirm_password = request.form.get('confirm_password')
+    photo = request.files.get('photo')
 
-    # ✅ check password confirmation
     if password != confirm_password:
         flash("Passwords do not match.", "danger")
         return redirect(url_for('auth.admin_dashboard'))
 
-    # ✅ check duplicate username
     if Doctor.query.filter_by(username=username).first():
         flash("Doctor already exists.", "danger")
         return redirect(url_for('auth.admin_dashboard'))
 
-    # ✅ save photo if provided
     filename = None
-    if photo and photo.filename:  # Check if file is selected
+    if photo and photo.filename:
         filename = secure_filename(photo.filename)
-        photo_path = os.path.join(UPLOAD_FOLDER, filename)
-        photo.save(photo_path)
+        # Use absolute path via current_app.root_path
+        upload_folder = os.path.join(current_app.root_path, 'static', 'uploads')
+        os.makedirs(upload_folder, exist_ok=True)  # ensure folder exists
+        try:
+            photo.save(os.path.join(upload_folder, filename))
+        except Exception as e:
+            flash(f"Failed to save photo: {str(e)}", "danger")
+            return redirect(url_for('auth.admin_dashboard'))
 
-    # ✅ hash and save doctor
     hashed_password = generate_password_hash(password)
     new_doctor = Doctor(username=username, password=hashed_password, photo=filename)
     db.session.add(new_doctor)
